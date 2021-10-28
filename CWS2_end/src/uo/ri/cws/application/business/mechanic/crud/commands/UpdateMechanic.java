@@ -10,7 +10,7 @@ import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
 import uo.ri.cws.application.business.util.command.Command;
 
-public class UpdateMechanic implements Command<Void>{
+public class UpdateMechanic implements Command<Void> {
 
 	private static String SQL = "update TMechanics " + "set name = ?, surname = ? " + "where id = ?";
 
@@ -22,6 +22,17 @@ public class UpdateMechanic implements Command<Void>{
 	}
 
 	public Void execute() throws BusinessException {
+
+
+		if (mechanic == null) {
+			throw new IllegalArgumentException("Tha Data cannot be null!");
+		}
+		if (mechanic.id == null || mechanic.name == null || mechanic.surname == null || mechanic.dni == null) {
+			throw new IllegalArgumentException("Tha Data cannot be null!");
+		}
+		if (mechanic.id.isBlank() || mechanic.name.isBlank() || mechanic.surname.isBlank() || mechanic.dni.isBlank()) {
+			throw new IllegalArgumentException("Tha Data cannot be blank!");
+		}
 
 		// Process
 		Connection c = null;

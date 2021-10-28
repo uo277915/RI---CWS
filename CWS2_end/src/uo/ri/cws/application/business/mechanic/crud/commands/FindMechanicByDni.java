@@ -9,25 +9,25 @@ import uo.ri.cws.application.business.util.command.Command;
 import uo.ri.cws.application.persistence.PersistenceFactory;
 import uo.ri.cws.application.persistence.mechanic.MechanicGateway;
 
-public class FindMechanicById implements Command<Optional<MechanicDto>> {
+public class FindMechanicByDni implements Command<Optional<MechanicDto>> {
 
-	private String id;
+	private String dni;
 	private MechanicGateway mg = PersistenceFactory.forMechanic();
 
-	public FindMechanicById(String id) {
+	public FindMechanicByDni(String dni) {
 
-		this.id = id;
+		this.dni = dni;
 	}
 
 	public Optional<MechanicDto> execute() throws BusinessException {
 
-		if (id == null) {
+		if (dni == null) {
 			throw new IllegalArgumentException("Tha Data cannot be null!");
 		}
-		if (id.isBlank()) {
+		if (dni.isBlank()) {
 			throw new IllegalArgumentException("Tha Data cannot be blank!");
 		}
 
-		return DtoAssembler.toDto(mg.findById(id));
+		return DtoAssembler.toDto(mg.findByDni(dni));
 	}
 }

@@ -22,7 +22,5 @@ public interface InvoiceGateway extends Gateway<InvoiceRecord> {
 	 */
 	Long getNextInvoiceNumber();
 
-	Optional<Long> findLastInvoiceNumber();
-
 
 }

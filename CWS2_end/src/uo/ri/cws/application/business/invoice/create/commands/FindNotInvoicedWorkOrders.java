@@ -8,6 +8,7 @@ import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.util.DtoAssembler;
 import uo.ri.cws.application.business.util.command.Command;
 import uo.ri.cws.application.persistence.PersistenceFactory;
+import uo.ri.cws.application.persistence.client.ClientGateway;
 import uo.ri.cws.application.persistence.workorder.WorkOrderGateway;
 
 public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrderDto>> {
@@ -15,6 +16,7 @@ public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrde
 
 	private String dni;
 	private WorkOrderGateway wg = PersistenceFactory.forWorkOrder();
+	private ClientGateway cg = PersistenceFactory.forClient();
 
 	/**
 	 * Process:
@@ -32,6 +34,13 @@ public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrde
 
 
 	public List<InvoicingWorkOrderDto> execute() throws BusinessException {
+
+		if (dni == null || dni.isBlank()) {
+			throw new IllegalArgumentException("Dni value is not correct");
+		}
+		if (cg.findByDni(dni).isEmpty()) {
+			throw new BusinessException("Client does not exist");
+		}
 
 		List<InvoicingWorkOrderDto> workOrders = new ArrayList<InvoicingWorkOrderDto>();
 

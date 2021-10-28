@@ -39,6 +39,12 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		try {
 			connection = Jdbc.getConnection();
 
+			if (workOrderIds == null || workOrderIds.isEmpty())
+				throw new IllegalArgumentException("Workorder ids values is not correct");
+			for (String workOrderID : workOrderIds) {
+				if (workOrderID == null || workOrderID.isBlank())
+					throw new IllegalArgumentException("Workorder id \"" + workOrderID + "  \" is not valid");
+			}
 			if (!checkWorkOrdersExist(workOrderIds))
 				throw new BusinessException("Workorder does not exist");
 			if (!checkWorkOrdersFinished(workOrderIds))
@@ -115,14 +121,8 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	 */
 	private Long generateInvoiceNumber() throws SQLException {
 
-		Optional<Long> last = ig.findLastInvoiceNumber();
+		return ig.getNextInvoiceNumber();
 
-		if (last.isEmpty()) {
-			return 1L;
-		} else {
-			Long value = last.get();
-			return value + 1;
-		}
 	}
 
 	/*

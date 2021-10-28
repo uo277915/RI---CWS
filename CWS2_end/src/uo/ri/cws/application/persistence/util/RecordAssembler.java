@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import uo.ri.cws.application.persistence.client.ClientRecord;
 import uo.ri.cws.application.persistence.mechanic.MechanicRecord;
 import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
@@ -78,6 +79,40 @@ public class RecordAssembler {
 		record.status = rs.getString("status");
 		record.mechanicId = rs.getString("mechanic_Id");
 		record.invoiceId = rs.getString("invoice_Id");
+
+		return record;
+	}
+
+
+	public static Optional<ClientRecord> toClientRecord(ResultSet rs) throws SQLException {
+
+		ClientRecord record = null;
+
+		if (rs.next()) {
+			record = resultSetToClientRecord(rs);
+		}
+		return Optional.ofNullable(record);
+
+	}
+
+
+	private static ClientRecord resultSetToClientRecord(ResultSet rs) throws SQLException {
+
+
+		ClientRecord record = new ClientRecord();
+
+		record.id = rs.getString("id");
+		record.version = rs.getLong("version");
+
+		record.dni = rs.getString("dni");
+		record.name = rs.getString("name");
+		record.surname = rs.getString("surname");
+		record.phone = rs.getString("phone");
+		record.email = rs.getString("email");
+
+		record.addressStreet = rs.getString("street");
+		record.addressCity = rs.getString("city");
+		record.addressZipcode = rs.getString("zipcode");
 
 		return record;
 	}

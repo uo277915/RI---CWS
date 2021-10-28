@@ -20,27 +20,29 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 			+ "	values(?, ?, ?, ?, ?, ?)";
 
 	@Override
-	public void add(InvoiceRecord t) {PreparedStatement pst = null;
+	public void add(InvoiceRecord t) {
 
-	try {
+		PreparedStatement pst = null;
 
-		pst = Jdbc.getCurrentConnection().prepareStatement(SQL_INSERT_INVOICE);
+		try {
 
-		pst.setString(1, t.id);
-		pst.setLong(2, t.number);
-		pst.setDate(3, Date.valueOf(t.date));
-		pst.setDouble(4, t.vat);
-		pst.setDouble(5, t.amount);
-		pst.setString(6, t.status);
+			pst = Jdbc.getCurrentConnection().prepareStatement(SQL_INSERT_INVOICE);
 
-		pst.executeUpdate();
+			pst.setString(1, t.id);
+			pst.setLong(2, t.number);
+			pst.setDate(3, Date.valueOf(t.date));
+			pst.setDouble(4, t.vat);
+			pst.setDouble(5, t.amount);
+			pst.setString(6, t.status);
 
-	} catch (SQLException e) {
-		throw new PersistenceException(e);
-		
-	} finally {
-		Jdbc.close(pst); // c
-	}
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+
+		} finally {
+			Jdbc.close(pst); // c
+		}
 
 	}
 
@@ -58,46 +60,44 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 
 	@Override
 	public Optional<InvoiceRecord> findById(String id) {
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<InvoiceRecord> findAll() {
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Optional<InvoiceRecord> findByNumber(Long number) {
+
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Long getNextInvoiceNumber() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Optional<Long> findLastInvoiceNumber() {
 		PreparedStatement pst = null;
 		ResultSet rs = null;
-		Long value = null;
 
 		try {
 			pst = Jdbc.getCurrentConnection().prepareStatement(SQL_LAST_INVOICE_NUMBER);
-			
 			rs = pst.executeQuery();
-			
-			value = rs.getLong(1);
 
+			if (rs.next()) {
+				return rs.getLong(1) + 1; // +1, next
+			} else { // there is none yet
+				return 1L;
+			}
 		} catch (SQLException e) {
 			throw new PersistenceException(e);
 		} finally {
 			Jdbc.close(rs, pst);
 		}
-		return Optional.of(value);
 	}
 }
