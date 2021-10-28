@@ -7,8 +7,10 @@ import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.util.DtoAssembler;
 import uo.ri.cws.application.business.util.command.Command;
+import uo.ri.cws.application.business.vehicle.VehicleDto;
 import uo.ri.cws.application.persistence.PersistenceFactory;
 import uo.ri.cws.application.persistence.client.ClientGateway;
+import uo.ri.cws.application.persistence.vehicle.VehicleGateway;
 import uo.ri.cws.application.persistence.workorder.WorkOrderGateway;
 
 public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrderDto>> {
@@ -16,6 +18,7 @@ public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrde
 
 	private String dni;
 	private WorkOrderGateway wg = PersistenceFactory.forWorkOrder();
+	private VehicleGateway vg = PersistenceFactory.forVehicle();
 	private ClientGateway cg = PersistenceFactory.forClient();
 
 	/**
@@ -44,7 +47,14 @@ public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrde
 
 		List<InvoicingWorkOrderDto> workOrders = new ArrayList<InvoicingWorkOrderDto>();
 
-		workOrders = DtoAssembler.toInvoicingWorkOrderList(wg.findNotInvoiced(dni));
+		String clientId = DtoAssembler.toDto(cg.findByDni(dni).get()).id;
+
+		List<VehicleDto> vehicles = DtoAssembler.toVehicleList(vg.findByClientId(clientId));
+
+		for (VehicleDto vehicleDto : vehicles) {
+			workOrders.addAll(DtoAssembler.toInvoicingWorkOrderList(wg.findNotInvoicedForVehicle(vehicleDto.id)));
+
+		}
 
 		return workOrders;
 	}

@@ -22,14 +22,12 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 	private static final String SQL_FIND_WORKORDERS = "select * from TWorkOrders where id = ?";
 
-	private static final String SQL_FIND_WORKORDERS_MECHANIC_ID = "select a.* from TWorkOrders as a, TMechanics as m where a.mechanic_id = m.id and m.id = ?";
+	private static final String SQL_FIND_WORKORDERS_MECHANIC_ID = "select * from TWorkOrders where mechanic_id = ?";
 
-	private static String SQL = "select a.* "
-			+ "from TWorkOrders as a, TVehicles as v, TClients as c "
-			+ "where a.vehicle_id = v.id "
-			+ "	and v.client_id = c.id "
-			+ "	and status <> 'INVOICED'"
-			+ "	and dni like ?";
+	private static String WORKORDER_FINDNOTINVOICEFORVEHICLE = "select * "
+			+ " from TWorkOrders"
+			+ " where vehicle_id = ? "
+			+ " and status <> 'INVOICED'";
 
 	@Override
 	public void add(WorkOrderRecord t) {
@@ -60,7 +58,7 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 		ResultSet rs = null;
 		Optional<WorkOrderRecord> wr;
 		try {
-			connection = Jdbc.getConnection();
+			connection = Jdbc.getCurrentConnection();
 
 			pst = connection.prepareStatement(SQL_FIND_WORKORDERS);
 
@@ -89,7 +87,7 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 	}
 
 	@Override
-	public List<WorkOrderRecord> findNotInvoiced(String dni) {
+	public List<WorkOrderRecord> findNotInvoicedForVehicle(String vehicleID) {
 
 		Connection c = null;
 		PreparedStatement pst = null;
@@ -98,10 +96,10 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 		List<WorkOrderRecord> workOrders = new ArrayList<WorkOrderRecord>();
 
 		try {
-			c = Jdbc.getConnection();
+			c = Jdbc.getCurrentConnection();
 
-			pst = c.prepareStatement(SQL);
-			pst.setString(1, dni);
+			pst = c.prepareStatement(WORKORDER_FINDNOTINVOICEFORVEHICLE);
+			pst.setString(1, vehicleID);
 
 			rs = pst.executeQuery();
 
@@ -110,7 +108,7 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			Jdbc.close(rs, pst, c);
+			Jdbc.close(rs, pst);
 		}
 
 		return workOrders;

@@ -26,6 +26,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/AlbUtil"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CWS2_end"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CWS"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

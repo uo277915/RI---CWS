@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import uo.ri.cws.application.business.client.ClientDto;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
 import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
+import uo.ri.cws.application.business.vehicle.VehicleDto;
+import uo.ri.cws.application.persistence.client.ClientRecord;
 import uo.ri.cws.application.persistence.invoice.InvoiceRecord;
 import uo.ri.cws.application.persistence.mechanic.MechanicRecord;
+import uo.ri.cws.application.persistence.vehicle.VehicleRecord;
 import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
 public class DtoAssembler {
@@ -83,5 +87,49 @@ public class DtoAssembler {
 
 		return dto;
 	}
+
+	public static ClientDto toDto(ClientRecord arg) {
+
+		ClientDto result = new ClientDto();
+
+		result.id = arg.id;
+		result.version = arg.version;
+
+		result.dni = arg.dni;
+		result.name = arg.name;
+		result.surname = arg.surname;
+		result.phone = arg.phone;
+		result.email = arg.email;
+		result.addressCity = arg.addressCity;
+		result.addressStreet = arg.addressStreet;
+		result.addressZipcode = arg.addressZipcode;
+
+		return result;
+	}
+
+	public static List<VehicleDto> toVehicleList(List<VehicleRecord> arg) {
+
+		List<VehicleDto> result = new ArrayList<VehicleDto>();
+		for (VehicleRecord record : arg)
+			result.add(toDto(record));
+		return result;
+	}
+
+	private static VehicleDto toDto(VehicleRecord arg) {
+
+		VehicleDto result = new VehicleDto();
+
+		result.id = arg.id;
+		result.version = arg.version;
+
+		result.platenumber = arg.platenumber;
+		result.client_id = arg.client_id;
+		result.make = arg.make;
+		result.model = arg.model;
+		result.vehicletype_id = arg.vehicletype_id;
+
+		return result;
+	}
+
 
 }

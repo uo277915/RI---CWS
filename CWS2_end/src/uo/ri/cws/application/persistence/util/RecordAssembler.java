@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import uo.ri.cws.application.persistence.client.ClientRecord;
 import uo.ri.cws.application.persistence.mechanic.MechanicRecord;
+import uo.ri.cws.application.persistence.vehicle.VehicleRecord;
 import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
 
@@ -113,6 +114,34 @@ public class RecordAssembler {
 		record.addressStreet = rs.getString("street");
 		record.addressCity = rs.getString("city");
 		record.addressZipcode = rs.getString("zipcode");
+
+		return record;
+	}
+
+
+	public static List<VehicleRecord> toVehicleRecordList(ResultSet rs) throws SQLException {
+
+		List<VehicleRecord> res = new ArrayList<>();
+		while (rs.next()) {
+			res.add(resultSetToVehicleRecord(rs));
+		}
+
+		return res;
+	}
+
+
+	private static VehicleRecord resultSetToVehicleRecord(ResultSet rs) throws SQLException {
+
+		VehicleRecord record = new VehicleRecord();
+
+		record.id = rs.getString("id");
+		record.version = rs.getLong("version");
+
+		record.platenumber = rs.getString("platenumber");
+		record.client_id = rs.getString("client_id");
+		record.make = rs.getString("make");
+		record.model = rs.getString("model");
+		record.vehicletype_id = rs.getString("vehicletype_id");
 
 		return record;
 	}
