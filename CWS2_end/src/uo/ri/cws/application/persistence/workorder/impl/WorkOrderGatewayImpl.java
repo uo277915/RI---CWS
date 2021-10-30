@@ -1,6 +1,5 @@
 package uo.ri.cws.application.persistence.workorder.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,24 +9,12 @@ import java.util.Optional;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.cws.application.persistence.PersistenceException;
+import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
 import uo.ri.cws.application.persistence.workorder.WorkOrderGateway;
 import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
 public class WorkOrderGatewayImpl implements WorkOrderGateway {
-
-	private static final String SQL_LINK_WORKORDER_TO_INVOICE = "update TWorkOrders set invoice_id = ? where id = ?";
-
-	private static final String SQL_MARK_WORKORDER_AS_INVOICED = "update TWorkOrders set status = 'INVOICED' where id = ?";
-
-	private static final String SQL_FIND_WORKORDERS = "select * from TWorkOrders where id = ?";
-
-	private static final String SQL_FIND_WORKORDERS_MECHANIC_ID = "select * from TWorkOrders where mechanic_id = ?";
-
-	private static String WORKORDER_FINDNOTINVOICEFORVEHICLE = "select * "
-			+ " from TWorkOrders"
-			+ " where vehicle_id = ? "
-			+ " and status <> 'INVOICED'";
 
 	@Override
 	public void add(WorkOrderRecord t) {
@@ -53,14 +40,12 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 	@Override
 	public Optional<WorkOrderRecord> findById(String id) {
 
-		Connection connection = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<WorkOrderRecord> wr;
 		try {
-			connection = Jdbc.getCurrentConnection();
 
-			pst = connection.prepareStatement(SQL_FIND_WORKORDERS);
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("WORKORDER_FINDBYID"));
 
 			pst.setString(1, id);
 
@@ -89,16 +74,16 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 	@Override
 	public List<WorkOrderRecord> findNotInvoicedForVehicle(String vehicleID) {
 
-		Connection c = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<WorkOrderRecord> workOrders = new ArrayList<WorkOrderRecord>();
 
 		try {
-			c = Jdbc.getCurrentConnection();
 
-			pst = c.prepareStatement(WORKORDER_FINDNOTINVOICEFORVEHICLE);
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_FINDNOTINVOICEDFORVEHICLE"));
+
 			pst.setString(1, vehicleID);
 
 			rs = pst.executeQuery();
@@ -119,7 +104,8 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 		PreparedStatement pst = null;
 		try {
-			pst = Jdbc.getCurrentConnection().prepareStatement(SQL_LINK_WORKORDER_TO_INVOICE);
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_LINKWORKORDER"));
 
 			pst.setString(1, invoiceId);
 			pst.setString(2, workOrderId);
@@ -140,7 +126,8 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 
 		PreparedStatement pst = null;
 		try {
-			pst = Jdbc.getCurrentConnection().prepareStatement(SQL_MARK_WORKORDER_AS_INVOICED);
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_MARKASINVOICED"));
 
 			pst.setString(1, id);
 
@@ -158,14 +145,13 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 	@Override
 	public Optional<WorkOrderRecord> findByMechanicId(String id) {
 
-		Connection connection = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Optional<WorkOrderRecord> wr;
 		try {
-			connection = Jdbc.getCurrentConnection();
 
-			pst = connection.prepareStatement(SQL_FIND_WORKORDERS_MECHANIC_ID);
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_FINDBYMECHANICID"));
 
 			pst.setString(1, id);
 

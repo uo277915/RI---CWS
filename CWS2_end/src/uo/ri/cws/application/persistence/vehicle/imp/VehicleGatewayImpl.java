@@ -1,6 +1,5 @@
 package uo.ri.cws.application.persistence.vehicle.imp;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,17 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import alb.util.jdbc.Jdbc;
+import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
 import uo.ri.cws.application.persistence.vehicle.VehicleGateway;
 import uo.ri.cws.application.persistence.vehicle.VehicleRecord;
 
 
 public class VehicleGatewayImpl implements VehicleGateway {
-
-
-	private static String VEHICLE_FINDBYCLIENTDNI = "select * "
-			+ " from TVehicles "
-			+ " where client_id = ? ";
 
 	@Override
 	public void add(VehicleRecord t) {
@@ -59,16 +54,14 @@ public class VehicleGatewayImpl implements VehicleGateway {
 	@Override
 	public List<VehicleRecord> findByClientId(String clientId) {
 
-		Connection c = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 
 		List<VehicleRecord> vehicles = new ArrayList<VehicleRecord>();
 
 		try {
-			c = Jdbc.getCurrentConnection();
-
-			pst = c.prepareStatement(VEHICLE_FINDBYCLIENTDNI);
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("VEHICLE_FINDBYCLIENTID"));
 			pst.setString(1, clientId);
 
 			rs = pst.executeQuery();

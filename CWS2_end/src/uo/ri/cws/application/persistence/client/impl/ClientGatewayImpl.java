@@ -10,14 +10,11 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.cws.application.persistence.PersistenceException;
 import uo.ri.cws.application.persistence.client.ClientGateway;
 import uo.ri.cws.application.persistence.client.ClientRecord;
+import uo.ri.cws.application.persistence.util.Conf;
 import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class ClientGatewayImpl implements ClientGateway {
 
-
-	private static String CLIENT_FINDBYDNI = "select * "
-			+ " from TClients"
-			+ " where dni = ?";
 
 	@Override
 	public void add(ClientRecord t) {
@@ -63,7 +60,7 @@ public class ClientGatewayImpl implements ClientGateway {
 
 		try {
 
-			ps = Jdbc.getCurrentConnection().prepareStatement(CLIENT_FINDBYDNI);
+			ps = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("CLIENT_FINDBYDNI"));
 			ps.setString(1, dni);
 			rs = ps.executeQuery();
 

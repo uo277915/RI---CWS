@@ -1,13 +1,10 @@
 package uo.ri.cws.application.business.invoice.create.commands;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import alb.util.jdbc.Jdbc;
 import alb.util.math.Round;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
@@ -21,7 +18,6 @@ import uo.ri.cws.application.persistence.workorder.WorkOrderRecord;
 
 public class CreateInvoice implements Command<InvoiceDto> {
 
-	private Connection connection;
 	private List<String> workOrderIds;
 
 	private InvoiceGateway ig = PersistenceFactory.forInvoice();
@@ -36,45 +32,35 @@ public class CreateInvoice implements Command<InvoiceDto> {
 
 		InvoiceDto dto = new InvoiceDto();
 
-		try {
-			connection = Jdbc.getConnection();
-
-			if (workOrderIds == null || workOrderIds.isEmpty())
-				throw new IllegalArgumentException("Workorder ids values is not correct");
-			for (String workOrderID : workOrderIds) {
-				if (workOrderID == null || workOrderID.isBlank())
-					throw new IllegalArgumentException("Workorder id \"" + workOrderID + "  \" is not valid");
-			}
-			if (!checkWorkOrdersExist(workOrderIds))
-				throw new BusinessException("Workorder does not exist");
-			if (!checkWorkOrdersFinished(workOrderIds))
-				throw new BusinessException("Workorder is not finished yet");
-
-			long numberInvoice = generateInvoiceNumber();
-			LocalDate dateInvoice = LocalDate.now();
-			double amount = calculateTotalInvoice(workOrderIds); // vat not included
-			double vat = vatPercentage(amount, dateInvoice);
-			double total = amount * (1 + vat / 100); // vat included
-			total = Round.twoCents(total);
-
-			String idInvoice = createInvoice(numberInvoice, dateInvoice, vat, total);
-			linkWorkordersToInvoice(idInvoice, workOrderIds);
-			markWorkOrderAsInvoiced(workOrderIds);
-
-			dto.id = idInvoice;
-			dto.number = numberInvoice;
-			dto.date = dateInvoice;
-			dto.vat = vat;
-			dto.total = total;
-			dto.status = InvoiceStatus.NOT_YET_PAID;
-
-			connection.commit();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			Jdbc.close(connection);
+		if (workOrderIds == null || workOrderIds.isEmpty())
+			throw new IllegalArgumentException("Workorder ids values is not correct");
+		for (String workOrderID : workOrderIds) {
+			if (workOrderID == null || workOrderID.isBlank())
+				throw new IllegalArgumentException("Workorder id \"" + workOrderID + "  \" is not valid");
 		}
+		if (!checkWorkOrdersExist(workOrderIds))
+			throw new BusinessException("Workorder does not exist");
+		if (!checkWorkOrdersFinished(workOrderIds))
+			throw new BusinessException("Workorder is not finished yet");
+
+		long numberInvoice = generateInvoiceNumber();
+		LocalDate dateInvoice = LocalDate.now();
+		double amount = calculateTotalInvoice(workOrderIds); // vat not included
+		double vat = vatPercentage(amount, dateInvoice);
+		double total = amount * (1 + vat / 100); // vat included
+		total = Round.twoCents(total);
+
+		String idInvoice = createInvoice(numberInvoice, dateInvoice, vat, total);
+		linkWorkordersToInvoice(idInvoice, workOrderIds);
+		markWorkOrderAsInvoiced(workOrderIds);
+
+		dto.id = idInvoice;
+		dto.number = numberInvoice;
+		dto.date = dateInvoice;
+		dto.vat = vat;
+		dto.total = total;
+		dto.status = InvoiceStatus.NOT_YET_PAID;
+
 
 		return dto;
 
@@ -83,7 +69,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * checks whether every work order exist
 	 */
-	private boolean checkWorkOrdersExist(List<String> workOrderIDS) throws SQLException, BusinessException {
+	private boolean checkWorkOrdersExist(List<String> workOrderIDS) {
 
 		for (String id : workOrderIDS) {
 
@@ -98,7 +84,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * checks whether every work order id is FINISHED
 	 */
-	private boolean checkWorkOrdersFinished(List<String> workOrderIDS) throws SQLException, BusinessException {
+	private boolean checkWorkOrdersFinished(List<String> workOrderIDS) throws BusinessException {
 
 		for (String workOrderID : workOrderIDS) {
 
@@ -119,7 +105,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * Generates next invoice number (not to be confused with the inner id)
 	 */
-	private Long generateInvoiceNumber() throws SQLException {
+	private Long generateInvoiceNumber() {
 
 		return ig.getNextInvoiceNumber();
 
@@ -129,7 +115,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	 * Compute total amount of the invoice (as the total of individual work orders'
 	 * amount
 	 */
-	private double calculateTotalInvoice(List<String> workOrderIDS) throws BusinessException, SQLException {
+	private double calculateTotalInvoice(List<String> workOrderIDS) throws BusinessException {
 
 		double totalInvoice = 0.0;
 		for (String workOrderID : workOrderIDS) {
@@ -141,7 +127,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * checks whether every work order id is FINISHED
 	 */
-	private Double getWorkOrderTotal(String workOrderID) throws SQLException, BusinessException {
+	private Double getWorkOrderTotal(String workOrderID) throws BusinessException {
 
 		Optional<WorkOrderRecord> workOrder = wg.findById(workOrderID);
 
@@ -166,8 +152,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * Creates the invoice in the database; returns the id
 	 */
-	private String createInvoice(long numberInvoice, LocalDate dateInvoice, double vat, double total)
-			throws SQLException {
+	private String createInvoice(long numberInvoice, LocalDate dateInvoice, double vat, double total) {
 
 		String idInvoice = UUID.randomUUID().toString();
 
@@ -189,7 +174,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	 * Set the invoice number field in work order table to the invoice number
 	 * generated
 	 */
-	private void linkWorkordersToInvoice(String invoiceId, List<String> workOrderIDS) throws SQLException {
+	private void linkWorkordersToInvoice(String invoiceId, List<String> workOrderIDS) {
 
 		for (String breakdownId : workOrderIDS) {
 			wg.linkWorkorder(invoiceId, breakdownId);
@@ -200,7 +185,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 	/*
 	 * Sets status to INVOICED for every workorder
 	 */
-	private void markWorkOrderAsInvoiced(List<String> ids) throws SQLException {
+	private void markWorkOrderAsInvoiced(List<String> ids) {
 
 		for (String id : ids) {
 			wg.markAsInvoiced(id);
