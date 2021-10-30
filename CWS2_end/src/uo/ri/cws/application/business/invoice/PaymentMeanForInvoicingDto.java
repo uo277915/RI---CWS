@@ -1,4 +1,4 @@
-package uo.ri.cws.application.business.paymentmean;
+package uo.ri.cws.application.business.invoice;
 
 public abstract class PaymentMeanForInvoicingDto {
 	public String id;

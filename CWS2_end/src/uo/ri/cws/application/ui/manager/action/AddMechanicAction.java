@@ -16,15 +16,14 @@ public class AddMechanicAction implements Action {
 		String name = Console.readString("Name"); 
 		String surname = Console.readString("Surname");
 		
+		// Process
 		MechanicDto m = new MechanicDto();
-		
 		m.dni = dni;
 		m.name = name;
 		m.surname = surname;
 		
-		// We call business to add it.
 		BusinessFactory.forMechanicCrudService().addMechanic(m);
-		
+	
 		
 		// Print result
 		Console.println("Mechanic added");

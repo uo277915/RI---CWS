@@ -11,8 +11,6 @@ public class DeleteMechanicAction implements Action {
 	public void execute() throws BusinessException {
 		String idMechanic = Console.readString("Type mechanic id "); 
 		
-		
-		// We call business to remove it.
 		BusinessFactory.forMechanicCrudService().deleteMechanic(idMechanic);
 		
 		

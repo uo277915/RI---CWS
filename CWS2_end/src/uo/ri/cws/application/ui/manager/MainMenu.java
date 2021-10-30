@@ -10,11 +10,11 @@ public class MainMenu extends BaseMenu {
 			{ "Mechanics management", 			MechanicMenu.class }, 
 			{ "Spare parts management", 			SparePartMenu.class },
 			{ "Vehicle types management", 	VehicleTypeMenu.class },
+			{ "Vouchers management", 				VoucherMenu.class },
 		};
 	}
 
 	public static void main(String[] args) {
 		new MainMenu().execute();
 	}
-
 }

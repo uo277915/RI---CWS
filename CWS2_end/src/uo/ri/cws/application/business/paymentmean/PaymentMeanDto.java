@@ -7,5 +7,4 @@ public abstract class PaymentMeanDto {
 	public String clientId;
 	public Double accumulated;
 	
-//	public static enum PaymentmeanTypes { CASH, CREDITCARD, VOUCHER };
 }

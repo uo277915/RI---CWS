@@ -11,15 +11,15 @@ public class ClientReceptionMenu extends BaseMenu {
 		menuOptions = new Object[][] { 
 			{"Foreman > Check in menu", null},
 			
-			{"Add breakdown", 			AddWorkOrderAction.class }, 
-			{"Update breakdown", 		UpdateWorkOrderAction.class },
-			{"Delete breakdown", 		NotYetImplementedAction.class },
+			{"Add workorder", 			AddWorkOrderAction.class }, 
+			{"Update workorder", 		UpdateWorkOrderAction.class },
+			{"Delete workorder", 		NotYetImplementedAction.class },
 			{"", null},
-			{"List breakdown", 			NotYetImplementedAction.class }, 
-			{"Check a breakdown", 		NotYetImplementedAction.class },
+			{"List workorder", 			NotYetImplementedAction.class }, 
+			{"Check a workorder", 		NotYetImplementedAction.class },
 			{"", null},
 			{"List mechanics", 			NotYetImplementedAction.class }, 
-			{"Assign a breakdown",  	NotYetImplementedAction.class },
+			{"Assign a workorder",  	NotYetImplementedAction.class },
 		};
 	}
 

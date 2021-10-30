@@ -59,7 +59,7 @@ public class CreateInvoice implements Command<InvoiceDto> {
 		dto.date = dateInvoice;
 		dto.vat = vat;
 		dto.total = total;
-		dto.status = InvoiceStatus.NOT_YET_PAID;
+		dto.status = InvoiceStatus.NOT_YET_PAID.toString();
 
 
 		return dto;

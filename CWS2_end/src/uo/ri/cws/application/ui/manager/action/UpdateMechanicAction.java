@@ -8,7 +8,6 @@ import uo.ri.cws.application.business.mechanic.MechanicDto;
 
 public class UpdateMechanicAction implements Action {
 
-
 	@Override
 	public void execute() throws BusinessException {
 		
@@ -16,16 +15,14 @@ public class UpdateMechanicAction implements Action {
 		String id = Console.readString("Type mechahic id to update"); 
 		String name = Console.readString("Name"); 
 		String surname = Console.readString("Surname");
-
-		MechanicDto m = new MechanicDto();
 		
+		MechanicDto m = new MechanicDto();
 		m.id = id;
 		m.name = name;
 		m.surname = surname;
 		
-		// We call business to add it.
+		// Process
 		BusinessFactory.forMechanicCrudService().updateMechanic(m);
-				
 		
 		// Print result
 		Console.println("Mechanic updated");

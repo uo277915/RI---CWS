@@ -4,19 +4,20 @@ import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.business.BusinessException;
+import uo.ri.cws.application.business.invoice.ChargeDto;
 import uo.ri.cws.application.business.invoice.InvoiceDto;
 import uo.ri.cws.application.business.invoice.InvoicingService;
 import uo.ri.cws.application.business.invoice.InvoicingWorkOrderDto;
+import uo.ri.cws.application.business.invoice.PaymentMeanForInvoicingDto;
 import uo.ri.cws.application.business.invoice.create.commands.CreateInvoice;
 import uo.ri.cws.application.business.invoice.create.commands.FindNotInvoicedWorkOrders;
-import uo.ri.cws.application.business.paymentmean.PaymentMeanForInvoicingDto;
 import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 
 public class InvoicingServiceImpl implements InvoicingService {
 
 	CommandExecutor ce = new CommandExecutor();
-	
+
 	@Override
 	public InvoiceDto createInvoiceFor(List<String> workOrderIds) throws BusinessException {
 
@@ -55,6 +56,13 @@ public class InvoicingServiceImpl implements InvoicingService {
 
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void settleInvoice(String id, List<ChargeDto> charges) {
+
+		// TODO Auto-generated method stub
+
 	}
 
 }

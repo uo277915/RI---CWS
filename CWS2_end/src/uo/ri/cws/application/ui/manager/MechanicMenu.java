@@ -1,9 +1,9 @@
 package uo.ri.cws.application.ui.manager;
 
 import alb.util.menu.BaseMenu;
-import alb.util.menu.NotYetImplementedAction;
 import uo.ri.cws.application.ui.manager.action.AddMechanicAction;
 import uo.ri.cws.application.ui.manager.action.DeleteMechanicAction;
+import uo.ri.cws.application.ui.manager.action.FindMechanicAction;
 import uo.ri.cws.application.ui.manager.action.FindAllMechanicsAction;
 import uo.ri.cws.application.ui.manager.action.UpdateMechanicAction;
 
@@ -16,7 +16,7 @@ public class MechanicMenu extends BaseMenu {
 			{ "Add mechanic", 				AddMechanicAction.class }, 
 			{ "Update mechanic", 	UpdateMechanicAction.class }, 
 			{ "Delete mechanic", 				DeleteMechanicAction.class }, 
-			{ "List mechanic", 				NotYetImplementedAction.class },
+			{ "List mechanic", 				FindMechanicAction.class },
 			{ "List mechanics", 				FindAllMechanicsAction.class },
 		};
 	}

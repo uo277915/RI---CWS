@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.business.BusinessException;
-import uo.ri.cws.application.business.paymentmean.PaymentMeanForInvoicingDto;
 
 /**
  * This service is intended to be used by the Cashier It follows the ISP
@@ -73,6 +72,8 @@ public interface InvoicingService {
 	 */
 	List<PaymentMeanForInvoicingDto> findPayMeansByClientDni(String dni)
 			throws BusinessException;
+
+	void settleInvoice(String id, List<ChargeDto> charges) throws BusinessException;
 
 
 	/*
