@@ -1,20 +1,16 @@
 package uo.ri.cws.application.business.mechanic.crud.commands;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import alb.util.jdbc.Jdbc;
 import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.mechanic.MechanicDto;
+import uo.ri.cws.application.business.util.DtoAssembler;
 import uo.ri.cws.application.business.util.command.Command;
+import uo.ri.cws.application.persistence.PersistenceFactory;
+import uo.ri.cws.application.persistence.mechanic.MechanicGateway;
 
 public class UpdateMechanic implements Command<Void> {
 
-	private static String SQL = "update TMechanics " + "set name = ?, surname = ? " + "where id = ?";
-
 	private MechanicDto mechanic;
+	private MechanicGateway mg = PersistenceFactory.forMechanic();
 
 	public UpdateMechanic(MechanicDto arg) {
 
@@ -33,29 +29,12 @@ public class UpdateMechanic implements Command<Void> {
 		if (mechanic.id.isBlank() || mechanic.name.isBlank() || mechanic.surname.isBlank() || mechanic.dni.isBlank()) {
 			throw new IllegalArgumentException("Tha Data cannot be blank!");
 		}
-
-		// Process
-		Connection c = null;
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-
-		try {
-			c = Jdbc.getConnection();
-
-			pst = c.prepareStatement(SQL);
-			pst.setString(1, mechanic.name);
-			pst.setString(2, mechanic.surname);
-			pst.setString(3, mechanic.id);
-
-			if (pst.executeUpdate() == 0) {
-				throw new BusinessException("Incorrect Mechanic ID! Nothing has been updated.");
-			}
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			Jdbc.close(rs, pst, c);
+		if (mg.findById(mechanic.id).isEmpty()) {
+			throw new BusinessException("There is no mechanic with id = " + mechanic.id + "!");
 		}
+
+		mg.update(DtoAssembler.toRecord(mechanic));
+
 		return null;
 	}
 }

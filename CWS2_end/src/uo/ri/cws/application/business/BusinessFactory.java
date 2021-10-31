@@ -1,7 +1,7 @@
 package uo.ri.cws.application.business;
 
 import uo.ri.cws.application.business.client.ClientCrudService;
-import uo.ri.cws.application.business.client.impl.ClientCrudServiceImpl;
+import uo.ri.cws.application.business.client.crud.ClientCrudServiceImpl;
 import uo.ri.cws.application.business.invoice.InvoicingService;
 import uo.ri.cws.application.business.invoice.create.InvoicingServiceImpl;
 import uo.ri.cws.application.business.mechanic.MechanicCrudService;
@@ -23,7 +23,6 @@ public class BusinessFactory {
 
 		return new InvoicingServiceImpl();
 	}
-
 
 	public static PaymentmeanCrudService forPaymentMeanCrudService() {
 

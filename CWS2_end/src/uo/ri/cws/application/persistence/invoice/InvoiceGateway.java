@@ -1,5 +1,6 @@
 package uo.ri.cws.application.persistence.invoice;
 
+import java.util.List;
 import java.util.Optional;
 
 import uo.ri.cws.application.persistence.Gateway;
@@ -21,6 +22,8 @@ public interface InvoiceGateway extends Gateway<InvoiceRecord> {
 	 * @
 	 */
 	Long getNextInvoiceNumber();
+
+	List<InvoiceRecord> findAllPaid();
 
 
 }

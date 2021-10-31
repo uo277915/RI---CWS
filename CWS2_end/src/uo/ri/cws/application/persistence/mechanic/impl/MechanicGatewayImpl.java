@@ -62,7 +62,24 @@ public class MechanicGatewayImpl implements MechanicGateway {
 
 	@Override
 	public void update(MechanicRecord t) {
-		// TODO Auto-generated method stub
+
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		try {
+
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("MECHANIC_UPDATE"));
+			pst.setString(1, t.name);
+			pst.setString(2, t.surname);
+			pst.setString(3, t.id);
+
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		} finally {
+			Jdbc.close(rs, pst);
+		}
 
 	}
 
@@ -93,8 +110,24 @@ public class MechanicGatewayImpl implements MechanicGateway {
 	@Override
 	public List<MechanicRecord> findAll() {
 
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		try {
+
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("MECHANIC_FINDALL"));
+
+			rs = pst.executeQuery();
+
+			return RecordAssembler.toMechanicRecordList(rs);
+
+		} catch (
+
+		SQLException e) {
+			throw new PersistenceException(e);
+		} finally {
+			Jdbc.close(rs, pst);
+		}
 	}
 
 	@Override

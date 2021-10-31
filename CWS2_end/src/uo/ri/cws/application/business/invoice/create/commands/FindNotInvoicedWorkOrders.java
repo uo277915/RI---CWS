@@ -47,7 +47,7 @@ public class FindNotInvoicedWorkOrders implements Command<List<InvoicingWorkOrde
 
 		List<InvoicingWorkOrderDto> workOrders = new ArrayList<InvoicingWorkOrderDto>();
 
-		String clientId = DtoAssembler.toDto(cg.findByDni(dni).get()).id;
+		String clientId = DtoAssembler.toClientDto(cg.findByDni(dni).get()).id;
 
 		List<VehicleDto> vehicles = DtoAssembler.toVehicleList(vg.findByClientId(clientId));
 

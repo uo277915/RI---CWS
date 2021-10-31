@@ -12,6 +12,7 @@ import uo.ri.cws.application.persistence.PersistenceException;
 import uo.ri.cws.application.persistence.invoice.InvoiceGateway;
 import uo.ri.cws.application.persistence.invoice.InvoiceRecord;
 import uo.ri.cws.application.persistence.util.Conf;
+import uo.ri.cws.application.persistence.util.RecordAssembler;
 
 public class InvoiceGatewayImpl implements InvoiceGateway {
 
@@ -92,6 +93,30 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 				return 1L;
 			}
 		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		} finally {
+			Jdbc.close(rs, pst);
+		}
+	}
+
+	@Override
+	public List<InvoiceRecord> findAllPaid() {
+
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		try {
+
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("INVOICE_FINDALLPAID"));
+
+			rs = pst.executeQuery();
+
+			return RecordAssembler.toInvoiceRecordList(rs);
+
+		} catch (
+
+		SQLException e) {
 			throw new PersistenceException(e);
 		} finally {
 			Jdbc.close(rs, pst);

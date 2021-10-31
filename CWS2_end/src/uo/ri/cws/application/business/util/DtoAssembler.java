@@ -88,7 +88,14 @@ public class DtoAssembler {
 		return dto;
 	}
 
-	public static ClientDto toDto(ClientRecord arg) {
+	public static Optional<ClientDto> toOptionalClientDto(Optional<ClientRecord> arg) {
+
+		Optional<ClientDto> result = arg.isEmpty() ? Optional.ofNullable(null)
+				: Optional.ofNullable(toClientDto(arg.get()));
+		return result;
+	}
+
+	public static ClientDto toClientDto(ClientRecord arg) {
 
 		ClientDto result = new ClientDto();
 
@@ -128,6 +135,35 @@ public class DtoAssembler {
 		result.model = arg.model;
 		result.vehicletype_id = arg.vehicletype_id;
 
+		return result;
+
+
+	}
+
+	public static ClientRecord toRecord(ClientDto arg) {
+
+		ClientRecord result = new ClientRecord();
+
+		result.id = arg.id;
+		result.version = arg.version;
+
+		result.dni = arg.dni;
+		result.name = arg.name;
+		result.surname = arg.surname;
+		result.phone = arg.phone;
+		result.email = arg.email;
+		result.addressCity = arg.addressCity;
+		result.addressStreet = arg.addressStreet;
+		result.addressZipcode = arg.addressZipcode;
+
+		return result;
+	}
+
+	public static List<ClientDto> toClientDtoList(List<ClientRecord> arg) {
+
+		List<ClientDto> result = new ArrayList<ClientDto>();
+		for (ClientRecord mr : arg)
+			result.add(toClientDto(mr));
 		return result;
 	}
 
