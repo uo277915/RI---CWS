@@ -17,7 +17,24 @@ public class VoucherGatewayImpl implements VoucherGateway {
 	@Override
 	public void add(VoucherRecord t) {
 
-		// TODO Auto-generated method stub
+		PreparedStatement pst = null;
+
+		try {
+
+			pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("VOUCHER_ADD"));
+			pst.setString(1, t.id);
+			pst.setDouble(2, t.balance);
+			pst.setString(3, t.code);
+			pst.setString(4, t.description);
+
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+
+		} finally {
+			Jdbc.close(pst); // c
+		}
 
 	}
 

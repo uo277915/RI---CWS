@@ -170,4 +170,81 @@ public class WorkOrderGatewayImpl implements WorkOrderGateway {
 		return wr;
 	}
 
+	@Override
+	public List<WorkOrderRecord> findInvoicedForVehicle(String id) {
+
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		List<WorkOrderRecord> workOrders = new ArrayList<WorkOrderRecord>();
+
+		try {
+
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_FINDINVOICEDFORVEHICLE"));
+
+			pst.setString(1, id);
+
+			rs = pst.executeQuery();
+
+			workOrders = RecordAssembler.toWorkOrderRecordList(rs);
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			Jdbc.close(rs, pst);
+		}
+
+		return workOrders;
+	}
+
+	@Override
+	public Optional<WorkOrderRecord> findByInvoiceId(String id) {
+
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Optional<WorkOrderRecord> wr;
+		try {
+
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_FINDBYINVOICEID"));
+
+			pst.setString(1, id);
+
+			rs = pst.executeQuery();
+
+			wr = RecordAssembler.toWorkOrderRecord(rs);
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		} finally
+
+		{
+			Jdbc.close(rs, pst);
+		}
+
+		return wr;
+	}
+
+	@Override
+	public void markAsUsed(WorkOrderRecord record) {
+
+		PreparedStatement pst = null;
+		try {
+			pst = Jdbc.getCurrentConnection()
+					.prepareStatement(Conf.getInstance().getProperty("WORKORDER_MARKASUSED"));
+
+			pst.setString(1, record.id);
+
+			pst.executeUpdate();
+
+		} catch (SQLException e) {
+
+			throw new PersistenceException(e);
+		} finally {
+			Jdbc.close(pst);
+		}
+
+	}
+
 }

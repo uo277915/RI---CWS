@@ -15,4 +15,10 @@ public interface WorkOrderGateway extends Gateway<WorkOrderRecord> {
 
 	Optional<WorkOrderRecord> findByMechanicId(String id);
 
+	List<WorkOrderRecord> findInvoicedForVehicle(String id);
+
+	Optional<WorkOrderRecord> findByInvoiceId(String id);
+
+	void markAsUsed(WorkOrderRecord record);
+
 }

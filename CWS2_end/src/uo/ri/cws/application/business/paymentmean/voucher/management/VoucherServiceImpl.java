@@ -7,15 +7,18 @@ import uo.ri.cws.application.business.BusinessException;
 import uo.ri.cws.application.business.paymentmean.voucher.VoucherDto;
 import uo.ri.cws.application.business.paymentmean.voucher.VoucherService;
 import uo.ri.cws.application.business.paymentmean.voucher.VoucherSummaryDto;
+import uo.ri.cws.application.business.paymentmean.voucher.management.commands.GenerateVouchers;
+import uo.ri.cws.application.business.util.command.CommandExecutor;
 
 
 public class VoucherServiceImpl implements VoucherService {
 
+	CommandExecutor ce = new CommandExecutor();
+
 	@Override
 	public int generateVouchers() throws BusinessException {
 
-		// TODO Auto-generated method stub
-		return 0;
+		return ce.execute(new GenerateVouchers());
 	}
 
 	@Override
